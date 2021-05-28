@@ -58,14 +58,26 @@ router.delete('/:id', (req, res) => {
 
     // Remove the member
     members.splice(delMember.id, 1);
-    
-    console.log(delMember);
-    if(delMember.length) {
-        return res.send(delMember[0]);
-    } else {
-        return res.status(404).json({ msg: `Member with ${req.params.id} doesn't exist`});
-    }
-
+    res.send(members);
 });
+
+// Update a member's info
+router.put('/:id', (req, res) => {
+    const found = members.some(member => member.id === parseInt(req.params.id));
+
+    if(found) {
+        const updMember = req.body;
+        members.forEach(member => {
+            if(member.id === parseInt(req.params.id)) {
+                member.name = updMember.name ? updMember.name : member.name;
+                member.email = updMember.email ? updMember.email : member.email;
+
+                res.json({ msg: 'Member updated', member })
+            }
+        });
+    } else {
+        return res.status(400).json({ msg: 'Member not found' });
+    }
+})
 
 module.exports = router;
