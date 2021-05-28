@@ -1,15 +1,23 @@
 // Bring in express
 const express = require('express');
 
+// Entry point -- Using express
+const app = express();
+
 // Node module that deals with paths
 const path = require('path');
+
+const exphbs = require('express-handlebars');
+
+const members = require('./Members');
+
+// Handlebars Middleware
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 // const logger = require('./logger');
 
 const { json } = require('express');
-
-// Entry point -- Using express
-const app = express();
 
 // Initialize middleware
 // app.use(logger);
@@ -38,6 +46,12 @@ app.use(express.json());
 
 // Handle URL encoded data
 app.use(express.urlencoded({ extended: false }));
+
+// Homepage Route
+app.get('/', (req, res) => res.render('index', {
+    title: 'Member App',
+    members
+}));
 
 // Set static folder, while building a static server
 // Use is used to include middle to the application

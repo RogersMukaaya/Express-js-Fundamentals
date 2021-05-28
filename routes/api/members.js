@@ -44,21 +44,9 @@ router.post('/', (req, res) => {
 
     members.push(newMember);
 
-    res.send(newMember);
-});
-
-// Delete a member from the group
-router.delete('/:id', (req, res) => {
-    // if(!req.params.id || !Number(eq.params.id)) {
-    //     return res.status(404).json({ msg: "Member doesn't exist, use a correct id" });
-    // }
-
-    // Member to be deleted
-    const delMember = members.filter(member => member.id === parseInt(req.params.id));
-
-    // Remove the member
-    members.splice(delMember.id, 1);
-    res.send(members);
+    // Usually when we are dealing with server rendered view,
+    // we redirect to the home page rather than return json
+    res.redirect('/');
 });
 
 // Update a member's info
@@ -75,6 +63,18 @@ router.put('/:id', (req, res) => {
                 res.json({ msg: 'Member updated', member })
             }
         });
+    } else {
+        return res.status(400).json({ msg: 'Member not found' });
+    }
+})
+
+// Delete a member's info
+router.delete('/:id', (req, res) => {
+    const found = members.some(member => member.id === parseInt(req.params.id));
+
+    if(found) {
+        res.json({ msg: 'Member deleted', members: members.filter(member => member.id !== parseInt
+        (req.params.id)) });
     } else {
         return res.status(400).json({ msg: 'Member not found' });
     }
